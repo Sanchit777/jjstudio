@@ -128,22 +128,22 @@ function DonutChart({ onTrack, atRisk, delayed }) {
   const p2 = p1 + (atRisk / tot) * 360;
   
   return (
-    <div className="card anim-fade-up anim-delay-1" style={{ padding: '24px', flex: 1 }}>
-      <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--stone-400)', marginBottom: 20 }}>Project Health Ratio</div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+    <div className="card anim-fade-up anim-delay-1" style={{ padding: '24px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--stone-400)' }}>Project Health Ratio</div>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 40, marginTop: 16 }}>
         <div style={{
-          width: 140, height: 140, borderRadius: '50%', position: 'relative', flexShrink: 0,
+          width: 180, height: 180, borderRadius: '50%', position: 'relative', flexShrink: 0,
           background: `conic-gradient(var(--green) 0deg ${p1}deg, var(--amber) ${p1}deg ${p2}deg, var(--red) ${p2}deg 360deg)`
         }}>
-          <div style={{ position: 'absolute', inset: 26, background: 'var(--warm-white)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
-             <span style={{ fontSize: 24, fontFamily: 'Cormorant Garamond, serif' }}>{tot}</span>
-             <span style={{ fontSize: 10, color: 'var(--stone-400)' }}>Total</span>
+          <div style={{ position: 'absolute', inset: 32, background: 'var(--warm-white)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+             <span style={{ fontSize: 32, fontFamily: 'Cormorant Garamond, serif' }}>{tot}</span>
+             <span style={{ fontSize: 11, color: 'var(--stone-400)' }}>Total</span>
           </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><div style={{width: 12, height: 12, borderRadius: '50%', background: 'var(--green)'}}/> <span style={{ fontSize: 13, color: 'var(--charcoal)', fontWeight: 500 }}>On Track ({onTrack})</span></div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><div style={{width: 12, height: 12, borderRadius: '50%', background: 'var(--amber)'}}/> <span style={{ fontSize: 13, color: 'var(--charcoal)', fontWeight: 500 }}>At Risk ({atRisk})</span></div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><div style={{width: 12, height: 12, borderRadius: '50%', background: 'var(--red)'}}/> <span style={{ fontSize: 13, color: 'var(--charcoal)', fontWeight: 500 }}>Delayed ({delayed})</span></div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}><div style={{width: 14, height: 14, borderRadius: '50%', background: 'var(--green)'}}/> <span style={{ fontSize: 14, color: 'var(--charcoal)', fontWeight: 500 }}>On Track ({onTrack})</span></div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}><div style={{width: 14, height: 14, borderRadius: '50%', background: 'var(--amber)'}}/> <span style={{ fontSize: 14, color: 'var(--charcoal)', fontWeight: 500 }}>At Risk ({atRisk})</span></div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}><div style={{width: 14, height: 14, borderRadius: '50%', background: 'var(--red)'}}/> <span style={{ fontSize: 14, color: 'var(--charcoal)', fontWeight: 500 }}>Delayed ({delayed})</span></div>
         </div>
       </div>
     </div>
