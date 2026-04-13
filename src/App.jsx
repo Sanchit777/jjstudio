@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Login from './pages/Login';
 import MDDashboard from './pages/MDDashboard';
 import ProjectList from './pages/ProjectList';
@@ -13,12 +13,26 @@ import BOQEstimate from './pages/BOQEstimate';
 import './index.css';
 
 export default function App() {
-  const [page, setPage]             = useState('login');
-  const [user, setUser]             = useState(null);
-  const [activeProject, setActiveProject] = useState(null);
+  const [page, setPage] = useState(() => localStorage.getItem('jj_page') || 'login');
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem('jj_user');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [activeProject, setActiveProject] = useState(() => {
+    const saved = localStorage.getItem('jj_project');
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  useEffect(() => { localStorage.setItem('jj_page', page); }, [page]);
+  useEffect(() => { localStorage.setItem('jj_user', JSON.stringify(user)); }, [user]);
+  useEffect(() => { localStorage.setItem('jj_project', JSON.stringify(activeProject)); }, [activeProject]);
 
   const handleLogin  = (u) => { setUser(u); setPage('dashboard'); };
-  const handleLogout = () => { setUser(null); setPage('login'); };
+  const handleLogout = () => { 
+    setUser(null); 
+    setPage('login'); 
+    localStorage.clear(); 
+  };
   const openProject  = (p) => { setActiveProject(p); setPage('project-detail'); };
   const goBack       = (dest) => setPage(dest || 'projects');
 
