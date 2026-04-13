@@ -21,6 +21,8 @@ const PROJECTS = [
 
 const STAGES = ['Onboarding','Pre-Requisites','Space Planning','Civil Drawings','Parallel Tracks','In-House Meeting','3D Rendering','Final Execution'];
 
+
+
 const statusMap = {
   'on-track': { label: 'On Track',  cls: 'badge-green' },
   'delayed':  { label: 'Delayed',   cls: 'badge-red'   },
@@ -73,6 +75,111 @@ function ProjectRow({ p, onOpenProject }) {
       </div>
       <div style={{ fontSize: 13, color: 'var(--stone-500)' }}>{p.value}</div>
       <span className={`badge ${st.cls}`}>{st.label}</span>
+    </div>
+  );
+}
+
+function ProjectProgressChart() {
+  return (
+    <div className="card anim-fade-up anim-delay-1" style={{ padding: '24px 24px 28px', marginBottom: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+        <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--stone-400)' }}>Project Live Progress Tracker</div>
+        <div style={{ display: 'flex', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--stone-500)' }}><div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--green)' }}/> On Track</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--stone-500)' }}><div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--amber)' }}/> At Risk</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--stone-500)' }}><div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--red)' }}/> Delayed</div>
+        </div>
+      </div>
+      
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {/* Progress Grid markers */}
+        <div style={{ position: 'relative', height: 0, width: '100%' }}>
+          {[0, 25, 50, 75, 100].map(pct => (
+            <div key={pct} style={{ position: 'absolute', left: `${pct}%`, top: 0, bottom: -200, width: 1, background: pct === 0 ? 'transparent' : 'var(--stone-100)', zIndex: 0 }} />
+          ))}
+        </div>
+        
+        {PROJECTS.map(p => {
+          const color = p.status === 'on-track' ? 'var(--green)' : p.status === 'delayed' ? 'var(--red)' : 'var(--amber)';
+          return (
+            <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 16, zIndex: 1 }}>
+              <div style={{ width: 120, fontSize: 13, fontWeight: 500, color: 'var(--charcoal)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={p.client}>{p.client}</div>
+              <div style={{ flex: 1, position: 'relative', height: 24, background: 'var(--stone-100)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: `${p.progress}%`, background: color, borderRadius: 'var(--radius-sm)', transition: 'width 1s ease-out' }} />
+                <span style={{ position: 'absolute', right: Math.max(100 - p.progress + 1, 2) + '%', top: '50%', transform: 'translateY(-50%)', paddingRight: 6, fontSize: 11, fontWeight: 600, color: p.progress > 10 ? '#fff' : 'var(--stone-400)' }}>{p.progress}%</span>
+              </div>
+            </div>
+          );
+        })}
+        {/* X-axis labels at bottom */}
+        <div style={{ position: 'relative', width: '100%', height: 20, marginTop: 4 }}>
+          {[0, 25, 50, 75, 100].map(pct => (
+            <div key={pct} style={{ position: 'absolute', left: `${pct}%`, top: 0, transform: 'translateX(-50%)', fontSize: 10, color: 'var(--stone-400)' }}>{pct}%</div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DonutChart({ onTrack, atRisk, delayed }) {
+  const tot = onTrack + atRisk + delayed || 1;
+  const p1 = (onTrack / tot) * 360;
+  const p2 = p1 + (atRisk / tot) * 360;
+  
+  return (
+    <div className="card anim-fade-up anim-delay-1" style={{ padding: '24px', flex: 1 }}>
+      <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--stone-400)', marginBottom: 20 }}>Project Health Ratio</div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+        <div style={{
+          width: 140, height: 140, borderRadius: '50%', position: 'relative', flexShrink: 0,
+          background: `conic-gradient(var(--green) 0deg ${p1}deg, var(--amber) ${p1}deg ${p2}deg, var(--red) ${p2}deg 360deg)`
+        }}>
+          <div style={{ position: 'absolute', inset: 26, background: 'var(--warm-white)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+             <span style={{ fontSize: 24, fontFamily: 'Cormorant Garamond, serif' }}>{tot}</span>
+             <span style={{ fontSize: 10, color: 'var(--stone-400)' }}>Total</span>
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><div style={{width: 12, height: 12, borderRadius: '50%', background: 'var(--green)'}}/> <span style={{ fontSize: 13, color: 'var(--charcoal)', fontWeight: 500 }}>On Track ({onTrack})</span></div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><div style={{width: 12, height: 12, borderRadius: '50%', background: 'var(--amber)'}}/> <span style={{ fontSize: 13, color: 'var(--charcoal)', fontWeight: 500 }}>At Risk ({atRisk})</span></div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><div style={{width: 12, height: 12, borderRadius: '50%', background: 'var(--red)'}}/> <span style={{ fontSize: 13, color: 'var(--charcoal)', fontWeight: 500 }}>Delayed ({delayed})</span></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LineChart() {
+  const points = "0,120 40,80 80,105 120,50 160,70 200,20 240,40";
+  return (
+    <div className="card anim-fade-up anim-delay-1" style={{ padding: '24px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--stone-400)', marginBottom: 16 }}>Drawings Released Trend</div>
+      <div style={{ flex: 1, position: 'relative' }}>
+        <svg viewBox="0 0 240 150" style={{ width: '100%', height: '100%', overflow: 'visible', strokeLinecap: 'round' }} preserveAspectRatio="none">
+          <line x1="0" y1="30" x2="240" y2="30" stroke="var(--stone-100)" strokeWidth="1" strokeDasharray="4"/>
+          <line x1="0" y1="75" x2="240" y2="75" stroke="var(--stone-100)" strokeWidth="1" strokeDasharray="4"/>
+          <line x1="0" y1="120" x2="240" y2="120" stroke="var(--stone-100)" strokeWidth="1" strokeDasharray="4"/>
+          <polygon points={"0,150 " + points + " 240,150"} fill="url(#grad1)" opacity="0.3" />
+          <polyline points={points} fill="none" stroke="var(--gold-dark)" strokeWidth="3" strokeLinejoin="round" />
+          <defs>
+            <linearGradient id="grad1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="var(--gold)" />
+              <stop offset="100%" stopColor="transparent" />
+            </linearGradient>
+          </defs>
+          <circle cx="0" cy="120" r="4" fill="#fff" stroke="var(--gold-dark)" strokeWidth="2" />
+          <circle cx="40" cy="80" r="4" fill="#fff" stroke="var(--gold-dark)" strokeWidth="2" />
+          <circle cx="80" cy="105" r="4" fill="#fff" stroke="var(--gold-dark)" strokeWidth="2" />
+          <circle cx="120" cy="50" r="4" fill="#fff" stroke="var(--gold-dark)" strokeWidth="2" />
+          <circle cx="160" cy="70" r="4" fill="#fff" stroke="var(--gold-dark)" strokeWidth="2" />
+          <circle cx="200" cy="20" r="4" fill="#fff" stroke="var(--gold-dark)" strokeWidth="2" />
+          <circle cx="240" cy="40" r="4" fill="#fff" stroke="var(--gold-dark)" strokeWidth="2" />
+        </svg>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--stone-400)', marginTop: 12 }}>
+        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+      </div>
     </div>
   );
 }
@@ -200,6 +307,13 @@ export default function MDDashboard({ user, onLogout, onNavigate, onOpenProject 
               {PROJECTS.map(p => <ProjectRow key={p.id} p={p} onOpenProject={onOpenProject} />)}
             </div>
           </div>
+
+          <div style={{ display: 'flex', gap: 24, marginTop: 24, marginBottom: 24 }}>
+            <DonutChart onTrack={onTrack} atRisk={atRisk} delayed={delayed} />
+            <LineChart />
+          </div>
+
+          <ProjectProgressChart />
         </div>
       </main>
     </div>
